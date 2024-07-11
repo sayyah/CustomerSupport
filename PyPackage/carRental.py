@@ -2,6 +2,7 @@ from datetime import date, datetime
 from typing import Optional, Union
 from langchain_core.tools import tool
 
+
 class CarRental:
     @tool
     def search_car_rentals(
@@ -47,7 +48,6 @@ class CarRental:
             dict(zip([column[0] for column in cursor.description], row)) for row in results
         ]
 
-
     @tool
     def book_car_rental(rental_id: int) -> str:
         """
@@ -62,7 +62,8 @@ class CarRental:
         conn = sqlite3.connect(db)
         cursor = conn.cursor()
 
-        cursor.execute("UPDATE car_rentals SET booked = 1 WHERE id = ?", (rental_id,))
+        cursor.execute(
+            "UPDATE car_rentals SET booked = 1 WHERE id = ?", (rental_id,))
         conn.commit()
 
         if cursor.rowcount > 0:
@@ -71,7 +72,6 @@ class CarRental:
         else:
             conn.close()
             return f"No car rental found with ID {rental_id}."
-
 
     @tool
     def update_car_rental(
@@ -100,7 +100,8 @@ class CarRental:
             )
         if end_date:
             cursor.execute(
-                "UPDATE car_rentals SET end_date = ? WHERE id = ?", (end_date, rental_id)
+                "UPDATE car_rentals SET end_date = ? WHERE id = ?", (
+                    end_date, rental_id)
             )
 
         conn.commit()
@@ -111,7 +112,6 @@ class CarRental:
         else:
             conn.close()
             return f"No car rental found with ID {rental_id}."
-
 
     @tool
     def cancel_car_rental(rental_id: int) -> str:
@@ -127,7 +127,8 @@ class CarRental:
         conn = sqlite3.connect(db)
         cursor = conn.cursor()
 
-        cursor.execute("UPDATE car_rentals SET booked = 0 WHERE id = ?", (rental_id,))
+        cursor.execute(
+            "UPDATE car_rentals SET booked = 0 WHERE id = ?", (rental_id,))
         conn.commit()
 
         if cursor.rowcount > 0:

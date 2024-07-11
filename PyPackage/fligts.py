@@ -5,6 +5,7 @@ from langchain_core.tools import tool
 import pytz
 from langchain_core.runnables import ensure_config
 
+
 class Fligts:
     @tool
     def fetch_user_flight_information() -> list[dict]:
@@ -45,7 +46,6 @@ class Fligts:
         conn.close()
 
         return results
-
 
     @tool
     def search_flights(
@@ -89,7 +89,6 @@ class Fligts:
 
         return results
 
-
     @tool
     def update_ticket_to_new_flight(ticket_no: str, new_flight_id: int) -> str:
         """Update the user's ticket to a new valid flight."""
@@ -123,7 +122,8 @@ class Fligts:
             return f"Not permitted to reschedule to a flight that is less than 3 hours from the current time. Selected flight is at {departure_time}."
 
         cursor.execute(
-            "SELECT flight_id FROM ticket_flights WHERE ticket_no = ?", (ticket_no,)
+            "SELECT flight_id FROM ticket_flights WHERE ticket_no = ?", (
+                ticket_no,)
         )
         current_flight = cursor.fetchone()
         if not current_flight:
@@ -157,7 +157,6 @@ class Fligts:
         conn.close()
         return "Ticket successfully updated to new flight."
 
-
     @tool
     def cancel_ticket(ticket_no: str) -> str:
         """Cancel the user's ticket and remove it from the database."""
@@ -170,7 +169,8 @@ class Fligts:
         cursor = conn.cursor()
 
         cursor.execute(
-            "SELECT flight_id FROM ticket_flights WHERE ticket_no = ?", (ticket_no,)
+            "SELECT flight_id FROM ticket_flights WHERE ticket_no = ?", (
+                ticket_no,)
         )
         existing_ticket = cursor.fetchone()
         if not existing_ticket:
@@ -189,7 +189,8 @@ class Fligts:
             conn.close()
             return f"Current signed-in passenger with ID {passenger_id} not the owner of ticket {ticket_no}"
 
-        cursor.execute("DELETE FROM ticket_flights WHERE ticket_no = ?", (ticket_no,))
+        cursor.execute(
+            "DELETE FROM ticket_flights WHERE ticket_no = ?", (ticket_no,))
         conn.commit()
 
         cursor.close()

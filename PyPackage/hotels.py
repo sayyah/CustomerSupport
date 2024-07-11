@@ -1,4 +1,7 @@
 from langchain_core.tools import tool
+from datetime import date, datetime
+from typing import Optional, Union
+
 
 class Hotels:
     @tool
@@ -44,7 +47,6 @@ class Hotels:
             dict(zip([column[0] for column in cursor.description], row)) for row in results
         ]
 
-
     @tool
     def book_hotel(hotel_id: int) -> str:
         """
@@ -59,7 +61,8 @@ class Hotels:
         conn = sqlite3.connect(db)
         cursor = conn.cursor()
 
-        cursor.execute("UPDATE hotels SET booked = 1 WHERE id = ?", (hotel_id,))
+        cursor.execute(
+            "UPDATE hotels SET booked = 1 WHERE id = ?", (hotel_id,))
         conn.commit()
 
         if cursor.rowcount > 0:
@@ -68,7 +71,6 @@ class Hotels:
         else:
             conn.close()
             return f"No hotel found with ID {hotel_id}."
-
 
     @tool
     def update_hotel(
@@ -92,7 +94,8 @@ class Hotels:
 
         if checkin_date:
             cursor.execute(
-                "UPDATE hotels SET checkin_date = ? WHERE id = ?", (checkin_date, hotel_id)
+                "UPDATE hotels SET checkin_date = ? WHERE id = ?", (
+                    checkin_date, hotel_id)
             )
         if checkout_date:
             cursor.execute(
@@ -109,7 +112,6 @@ class Hotels:
             conn.close()
             return f"No hotel found with ID {hotel_id}."
 
-
     @tool
     def cancel_hotel(hotel_id: int) -> str:
         """
@@ -124,7 +126,8 @@ class Hotels:
         conn = sqlite3.connect(db)
         cursor = conn.cursor()
 
-        cursor.execute("UPDATE hotels SET booked = 0 WHERE id = ?", (hotel_id,))
+        cursor.execute(
+            "UPDATE hotels SET booked = 0 WHERE id = ?", (hotel_id,))
         conn.commit()
 
         if cursor.rowcount > 0:

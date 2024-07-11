@@ -1,5 +1,7 @@
 from langchain_core.tools import tool
-    
+from typing import Optional
+
+
 class Excursions:
     @tool
     def search_trip_recommendations(
@@ -32,7 +34,8 @@ class Excursions:
             params.append(f"%{name}%")
         if keywords:
             keyword_list = keywords.split(",")
-            keyword_conditions = " OR ".join(["keywords LIKE ?" for _ in keyword_list])
+            keyword_conditions = " OR ".join(
+                ["keywords LIKE ?" for _ in keyword_list])
             query += f" AND ({keyword_conditions})"
             params.extend([f"%{keyword.strip()}%" for keyword in keyword_list])
 
@@ -44,7 +47,6 @@ class Excursions:
         return [
             dict(zip([column[0] for column in cursor.description], row)) for row in results
         ]
-
 
     @tool
     def book_excursion(recommendation_id: int) -> str:
@@ -61,7 +63,8 @@ class Excursions:
         cursor = conn.cursor()
 
         cursor.execute(
-            "UPDATE trip_recommendations SET booked = 1 WHERE id = ?", (recommendation_id,)
+            "UPDATE trip_recommendations SET booked = 1 WHERE id = ?", (
+                recommendation_id,)
         )
         conn.commit()
 
@@ -71,7 +74,6 @@ class Excursions:
         else:
             conn.close()
             return f"No trip recommendation found with ID {recommendation_id}."
-
 
     @tool
     def update_excursion(recommendation_id: int, details: str) -> str:
@@ -101,7 +103,6 @@ class Excursions:
             conn.close()
             return f"No trip recommendation found with ID {recommendation_id}."
 
-
     @tool
     def cancel_excursion(recommendation_id: int) -> str:
         """
@@ -117,7 +118,8 @@ class Excursions:
         cursor = conn.cursor()
 
         cursor.execute(
-            "UPDATE trip_recommendations SET booked = 0 WHERE id = ?", (recommendation_id,)
+            "UPDATE trip_recommendations SET booked = 0 WHERE id = ?", (
+                recommendation_id,)
         )
         conn.commit()
 
